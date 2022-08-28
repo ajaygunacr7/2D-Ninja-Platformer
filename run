@@ -1,0 +1,6 @@
+clear 
+#g++ game.cpp -c || { echo "Error While compiling"; exit;}
+g++ *.cpp -o gameOut -std=c++17 -lsfml-window -lsfml-graphics -lsfml-system || { echo "Error While Linking"; exit; }
+echo "Compilation and Linking Sucessfull."
+echo " Running Game... "
+./gameOut
