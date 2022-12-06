@@ -1,15 +1,24 @@
 #pragma once
-#include <SFML/Graphics.hpp>
+#include"Headers.h"
 
 class Collider
 {
 public:
-    Collider(sf::RectangleShape& body);
+    // Collider(){body = nullptr;}
+    Collider(sf::Sprite& body);
     ~Collider();
 
-    sf::Vector2f CheckCollision(Collider, float);
+    void MakeCollider(sf::Sprite& body)
+    {
+        this->body = body;
+    }
+
+
+    sf::Vector2f CheckCollision(Collider&, float);
+
+
     void move(sf::Vector2f movement){body.move(movement);}
 
 private:
-    sf::RectangleShape& body;
+    sf::Sprite& body;
 };

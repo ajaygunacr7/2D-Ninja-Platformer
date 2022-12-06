@@ -1,11 +1,22 @@
 #include "Animation.h"
+#include<iostream>
+#include<cmath>
+enum Actions {
+    Idle = 0,
+    Jump,
+    Run,
+    Glide,
+    Slide
+};
+
+
 
 Animation::Animation(std::string Location, float switchTime,int imageCount)
 {
     this->location = Location;
-    this->action = "Idle__00";
+    AnimAct = Idle;
     sf::Texture texture;
-    texture.loadFromFile(Location + action + "0.png");
+    texture.loadFromFile(Location + SActions[Idle] + "0.png");
 
 
     this->imageCount = imageCount;
@@ -19,33 +30,49 @@ Animation::Animation(std::string Location, float switchTime,int imageCount)
 Animation::~Animation()
 {}
 
-void Animation::update(std::string action,bool faceRight, float deltaTime,sf::Texture &texture)
+void Animation::update(int& CurrAct,bool faceRight, float deltaTime,sf::Texture &texture,int falling=0)
 {    
     this->totalTime += deltaTime;
-    if(this->action.compare(action)!=0)
+
+    if(AnimAct != CurrAct)
     {
         CurrentImage = 0;
-        this->action = action;
+        AnimAct = CurrAct;
     }
     if (totalTime >= switchTime)
     {
         totalTime -= switchTime;
-        CurrentImage++;
+        if(CurrAct == Jump)
+        {
+            if(falling == -1 && CurrentImage != 9)
+            {
+                CurrentImage++;
+            }
+            else if(falling == 1 && CurrentImage != 4)
+            {
+                CurrentImage++;
+            }
+        }
+        else
+            CurrentImage++;
         if(CurrentImage == imageCount)
             CurrentImage = 0;
     }
+
+    
+
     std::string file;
-    file = location + action + std::to_string(CurrentImage) +".png";
+    file = location + SActions[CurrAct] + std::to_string(CurrentImage) +".png";
     texture.loadFromFile(file);
     if(faceRight == true)
     {
         rect.left= 0;
-        rect.width = abs(texture.getSize().x);
+        rect.width = texture.getSize().x;
     }
    else
    {
-        rect.left = abs(texture.getSize().x);
-        rect.width = -abs(texture.getSize().x);
+        rect.left = texture.getSize().x;
+        rect.width = -texture.getSize().x;
 
    }
 }

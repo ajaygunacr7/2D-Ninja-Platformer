@@ -1,6 +1,5 @@
 #pragma once
-#include<SFML/Graphics.hpp>
-#include <string.h>
+#include"Headers.h"
 #include "Collider.h"
 
 class Platform
@@ -10,7 +9,10 @@ public:
     ~Platform() {}
 
     void draw(sf::RenderWindow& window);
-    //Collider getCollision(){return Collider(body);}
+    Collider getCollision()
+    {
+        return Collider(body);
+    }
 private:
     sf::Sprite body;
     sf::Texture texture;

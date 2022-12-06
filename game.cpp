@@ -1,11 +1,11 @@
-#include<iostream>
-#include<SFML/Graphics.hpp>
+#include "Headers.h"
 #include "Collider.h"
 #include "Character.h"
-#include "Platform.h"
+// #include "Platform.h"
+#include "Map.h"
 
-static const float Window_Width = 1280;
-static const float Window_Height = 720;
+static const float Window_Width = 800;
+static const float Window_Height = 600;
 
 void ResizeView(const sf::RenderWindow& window, sf::View& view)
 {
@@ -16,13 +16,23 @@ void ResizeView(const sf::RenderWindow& window, sf::View& view)
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(Window_Width,Window_Height), "2D Ninja Platfomer", sf::Style::Close | sf::Style::Resize);
+    sf::RenderWindow window(
+        sf::VideoMode(Window_Width,Window_Height),
+         "2D Ninja Platfomer",
+          sf::Style::Close | sf::Style::Resize
+    );
+
+    std::string FileLoc = "Map/Level1";
+    Map map(FileLoc);
+
+    map.ReadMap();
+
     Character player("Player/",0.05f, 10, 100);
     float deltaTime = 0.0f;
     sf::Clock clock;
     sf::View view;
-    Platform platform(sf::Vector2f(500.0f, 100.0f),sf::Vector2f(100.0f, 575.0f),"BrickWall");
-
+    
+    sf::Vector2f movement;
     while(window.isOpen())
     {
         deltaTime = clock.restart().asSeconds();
@@ -42,12 +52,25 @@ int main()
             }
         }
         player.update(deltaTime);
-        view.setCenter(player.getPoisition());
-        //platform.getCollision().CheckCollision(player.getCollision(),0.0f);
+
+        sf::Vector2f PPos = player.getPosition();
+
+        view.setCenter(PPos);
+        
+        // movement = platform.getCollision().CheckCollision(player.getCollision(),1.0f);
+        // if(movement.y != 0.0f)
+        //     player.setGrounded(true);
+
+        map.CollisionTest(player);
+
         window.clear();
+        
         window.setView(view);
-        platform.draw(window);
+
+        map.draw(window,player.getPosition());
+
         player.draw(window);
+
         window.display();
     }
 
